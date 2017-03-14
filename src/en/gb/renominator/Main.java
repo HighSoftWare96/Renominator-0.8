@@ -1,3 +1,4 @@
+package en.gb.renominator;
 import java.awt.EventQueue;
 import java.io.*;
 import java.nio.file.Path;
@@ -20,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import java.awt.Label;
 import java.awt.Color;
@@ -32,6 +34,19 @@ import java.awt.Scrollbar;
 import java.io.*;
 import javax.swing.JSeparator;
 
+/**
+ * <h1> RENOMINATOR 1.0 </h1> <br> 
+ * <strong> Specs: </strong> This program allows to rename groups of file in a
+ * folder with a specified extension. It works only on Windows! <br>
+ * <strong> Issues: </strong> With the alphabetic mode there is a weak logic of assignment (to improve). Last
+ * modification: March 2017 Made coding and with the WindowBuilder add-on for
+ * Eclipse Neon.
+ * 
+ * @version 1.0
+ * @author Giovanni Bertoncelli (HighSoftware96 on GitHub)
+ * @see https://github.com/HighSoftWare96/Renominator-0.8
+ * 
+ */
 public class Main {
 
 	private JFrame frame;
@@ -42,9 +57,6 @@ public class Main {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		char c = 123 % 123 + 97;
-		System.out.println(c);
-
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -70,27 +82,38 @@ public class Main {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(SystemColor.window);
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
 		frame.getContentPane().setForeground(Color.RED);
 		frame.setTitle("Renominator");
-		frame.setBounds(100, 100, 442, 402);
+		frame.setBounds(100, 100, 439, 395);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
+		/**
+		 * Title label of the program at the top
+		 */
 		JLabel titleLabel = new JLabel("RENOMINATOR");
-		titleLabel.setForeground(SystemColor.activeCaption);
-		titleLabel.setBounds(0, 11, 434, 27);
+		titleLabel.setForeground(new Color(30, 144, 255));
+		titleLabel.setBounds(10, 11, 406, 27);
 		titleLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
 		frame.getContentPane().add(titleLabel);
 
+		/**
+		 * Description label of the program
+		 */
 		JLabel descriptionLabel = new JLabel("This program helps you rename groups of files simply!");
+		descriptionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		descriptionLabel.setForeground(SystemColor.inactiveCaptionText);
 		descriptionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		descriptionLabel.setBounds(61, 38, 286, 27);
+		descriptionLabel.setBounds(10, 38, 406, 27);
 		frame.getContentPane().add(descriptionLabel);
 
+		/**
+		 * Text field for the insertion of the working path
+		 */
 		folderPath = new JTextField();
 		folderPath.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		folderPath.setBounds(61, 95, 229, 20);
@@ -102,6 +125,9 @@ public class Main {
 		firstLabel.setBounds(61, 76, 168, 14);
 		frame.getContentPane().add(firstLabel);
 
+		/**
+		 * Text field for the insertion of the working extension
+		 */
 		ext = new JTextField();
 		ext.setHorizontalAlignment(SwingConstants.LEFT);
 		ext.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -119,14 +145,20 @@ public class Main {
 		label.setBounds(166, 148, 46, 14);
 		frame.getContentPane().add(label);
 
+		/**
+		 * Radio button for the first modality (alphabetical mode)
+		 */
 		JRadioButton radioA = new JRadioButton("a, b, c, d,...");
 		radioA.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		radioA.setBounds(61, 190, 109, 23);
+		radioA.setBounds(176, 190, 109, 23);
 		frame.getContentPane().add(radioA);
 
+		/**
+		 * Radio button for the second modality (numerical mode)
+		 */
 		JRadioButton radio01 = new JRadioButton("01, 02, 03, ...");
 		radio01.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		radio01.setBounds(181, 190, 109, 23);
+		radio01.setBounds(61, 190, 109, 23);
 		frame.getContentPane().add(radio01);
 
 		// gruppo di bottoni mutuamente esclusivi
@@ -139,6 +171,9 @@ public class Main {
 		thirdLabel.setBounds(61, 173, 109, 14);
 		frame.getContentPane().add(thirdLabel);
 
+		/**
+		 * Browsing button that invoke the default browse window of Java Swing
+		 */
 		// BOTTONE DI BROWSE
 		Button button = new Button("Browse...");
 		button.setForeground(Color.BLACK);
@@ -168,13 +203,19 @@ public class Main {
 		alertLabel.setBounds(0, 221, 419, 20);
 		frame.getContentPane().add(alertLabel);
 
+		/**
+		 * Logging text area
+		 */
 		JTextArea output = new JTextArea();
 		output.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-		output.setBackground(Color.WHITE);
+		output.setBackground(SystemColor.window);
 		output.setText("Welcome to Renominator 1.0");
 		output.setBounds(13, 325, 406, 27);
 		frame.getContentPane().add(output);
 
+		/**
+		 * Button enter and entire logic of the program
+		 */
 		Button enter = new Button("PROCEED >");
 		enter.setForeground(new Color(204, 0, 51));
 		enter.setFont(new Font("Segoe UI", Font.BOLD, 17));
@@ -189,21 +230,23 @@ public class Main {
 				// lista dei file nella cartella
 				File[] dirList = dir.listFiles();
 
+				// GESTIONE DEGLI ERRORI
 				// non è stato inserito il percorso della cartella!
 				if (folderPath.getText().equals("")) {
 					output.setText("Insert a path!");
 					return;
 				}
-				
-				if(dirList == null){
+
+				if (dirList == null) {
 					output.setText("Invalid path?");
 					return;
 				}
-				
+
 				if (dirList != null) {
 					int index = 0;
 
-					if (ext.getText().equals("")) { // non è stata inserita un
+					if (ext.getText().equals("")) { // non è stata inserita
+													// un
 						// estensione
 						output.setText("Please insert an extension for the files!");
 						return;
@@ -212,6 +255,16 @@ public class Main {
 					// selezione di una modalità non fatta
 					if (!radio01.isSelected() && !radioA.isSelected()) {
 						output.setText("Choose a modality!");
+						return;
+					}
+
+					// finestra di conferma della transazione
+					int dialogResult = JOptionPane.showConfirmDialog(null,
+							"Are you sure?\n (All these files will be modified!)", "Warning",
+							JOptionPane.YES_NO_OPTION);
+
+					// risposta negativa
+					if (dialogResult == JOptionPane.NO_OPTION) {
 						return;
 					}
 
@@ -259,12 +312,31 @@ public class Main {
 		enter.setBounds(137, 247, 137, 48);
 		frame.getContentPane().add(enter);
 
+		// checking operative system
+		System.out.println("This OS: " + System.getProperty("os.name"));
+		if (!System.getProperty("os.name").contains("Windows")) {
+			output.setText("This program probably doesn't work on your system. Sorry!");
+			enter.setEnabled(false);
+		}
+
 		JSeparator separator = new JSeparator();
 		separator.setBounds(13, 313, 395, 20);
 		frame.getContentPane().add(separator);
 
 	}
 
+	/**
+	 * Function that fork the process in a new thread of cmd.exe and use the
+	 * Windows command line to rename the files chosen. NUMERICAL MODE
+	 * 
+	 * @param path:
+	 *            the working dir
+	 * @param ext:
+	 *            the extension used
+	 * @param i:
+	 *            integer of index
+	 * @return void
+	 */
 	void rename01(String path, String ext, int i) {
 
 		try {
@@ -289,29 +361,36 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Function that fork the process in a new thread of cmd.exe and use the
+	 * Windows command line to rename the files chosen. ALPHABETICAL MODE
+	 * 
+	 * @param path:
+	 *            the working dir
+	 * @param ext:
+	 *            the extension used
+	 * @param i:
+	 *            integer of index
+	 * @return void
+	 */
 	void renameA(String path, String ext, int i) {
-		
-		//aggiungo l'offset dell'alfabeto
-		i += 97;
-		
-		String supply = "";
-		
-		// siamo oltre la zeta
-		if (i > 122) {
-			
-			//riparto dalla a
-			int tempInt = (i % 123);
-			char tempChar = (char) tempInt;
-			supply += tempChar;
-		}
-		
-		//TODO bisogna sistemare il ciclo dell'alfabeto...
-		if(i / 123 > 0)
-			i %= 123 + 97;
-		
-		char cr = (char) i;
 
+		int temp = i;
+		String supply = "";
+
+		// oltrepassato l'alfabeto
+		while (temp > 25) {
+			supply += generateChar(temp);
+			temp -= 25;
+		}
+
+		// ricava un nuovo carattere
+		char cr = generateChar(i);
+
+		// aggiunge eventuali caratteri supplementari
 		String c = cr + supply;
+		// debugging
+		System.out.println(c);
 
 		try {
 
@@ -323,7 +402,7 @@ public class Main {
 			// ed esegue il comando di rinonima
 			Process process = new ProcessBuilder("C:\\Windows\\system32\\cmd.exe", "/c", command).start();
 
-			System.out.println("Running...");
+			System.out.println("Running... ");
 
 			// attendo la conclusione del comando (che a questo punto dovrebbe
 			// essere conclusa)
@@ -333,5 +412,24 @@ public class Main {
 			System.out.println("Uoops!\n");
 			e1.printStackTrace();
 		}
+	}
+
+	/**
+	 * Function that return a char value for the alphabetical renaming
+	 * 
+	 * @param index:
+	 *            an integer for the assignment of the name
+	 * @return char
+	 */
+	char generateChar(int i) {
+		i += 97;
+
+		while (i >= 123) {
+			i %= 123;
+			i += 97;
+		}
+
+		char c = (char) i;
+		return c;
 	}
 }
